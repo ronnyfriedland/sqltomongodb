@@ -1,5 +1,0 @@
-<entity source="select * from message">
-    <column sourceColumn="uuid" targetField="id" type="string" pk="true" />
-    <column sourceColumn="subject" targetField="subject" type="string" />
-    <column sourceColumn="message" targetField="message" type="blob" gridfs="true" />
-</entity>

@@ -9,17 +9,28 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 public class Entity {
 
     @JacksonXmlProperty(isAttribute = true)
-    private String source;
+    private String sourceSql;
+
+    @JacksonXmlProperty(isAttribute = true)
+    private String targetCollection;
 
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<Column> column = new ArrayList<>();
 
-    public String getSource() {
-        return source;
+    public String getSourceSql() {
+        return sourceSql;
     }
 
-    public void setSource(final String source) {
-        this.source = source;
+    public void setSourceSql(final String sourceSql) {
+        this.sourceSql = sourceSql;
+    }
+
+    public String getTargetCollection() {
+        return targetCollection;
+    }
+
+    public void setTargetCollection(final String targetCollection) {
+        this.targetCollection = targetCollection;
     }
 
     public List<Column> getColumn() {
