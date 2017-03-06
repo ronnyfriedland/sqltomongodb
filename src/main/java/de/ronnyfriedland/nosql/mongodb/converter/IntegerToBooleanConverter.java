@@ -9,6 +9,9 @@ public class IntegerToBooleanConverter implements Converter<Integer, Boolean> {
      */
     @Override
     public Boolean convert(final Integer source) {
+        if (null == source) {
+            return Boolean.FALSE;
+        }
         return BooleanUtils.toBooleanObject(source);
     }
 
