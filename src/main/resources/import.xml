@@ -1,0 +1,10 @@
+<entity sourceSql="select * from ( select rownum rnum, a.* from (select mle.uuid, mle.optionpersonal, mle.subject, mle.messagedate, mle.recipients, mle.mailbox_uuid, m.messagebody from messagelistentry mle, message m where mle.uuid = m.mle_uuid order by mle.uuid) a where rownum &lt;= {limit} ) where rnum &gt; {offset}" targetCollection="message">
+    <column sourceColumn="uuid" targetField="_id" type="string" pk="true" />
+    <column sourceColumn="subject" targetField="subject" type="string" />
+    <column sourceColumn="recipients" targetField="recipients" type="string" />
+    <column sourceColumn="messagedate" targetField="messagedate" type="timestamp" />
+    <column sourceColumn="messagebody" targetField="message" type="blob" gridfs="true" />
+    <column sourceColumn="messagebody" targetField="messagecontent" type="mimemessagetextblob" />
+    <column sourceColumn="mailbox_uuid" targetField="mailboxUuid" type="string" />
+    <column sourceColumn="optionpersonal" targetField="optionpersonal" type="boolean" />
+</entity>

@@ -1,7 +1,6 @@
 package de.ronnyfriedland.nosql.mongodb.service;
 
 import java.io.IOException;
-import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.mongodb.BulkOperationException;
+import org.springframework.data.mongodb.core.BulkOperations.BulkMode;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,20 +22,22 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBCollection;
-import com.mongodb.DuplicateKeyException;
+import com.mongodb.BulkWriteResult;
 
 import de.ronnyfriedland.nosql.mongodb.configuration.Column;
+import de.ronnyfriedland.nosql.mongodb.converter.BlobMimeMessageTextExtractor;
+import de.ronnyfriedland.nosql.mongodb.converter.StringToIntegerConverter;
 import de.ronnyfriedland.nosql.mongodb.protocol.ProtocolLogger;
 import de.ronnyfriedland.nosql.mongodb.protocol.ProtocolLogger.Status;
 
 @Service
 @Transactional
-public class MigrationExecutor {
+public class MigrationBatchExecutor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MigrationExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MigrationBatchExecutor.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -57,6 +60,7 @@ public class MigrationExecutor {
      * @return number of migrated rows
      */
     public long migrate(final String sql, final Collection<Column> columns, final String collectionName) {
+        long start = System.currentTimeMillis();
         final AtomicInteger counter = new AtomicInteger(0);
         Collection<BasicDBObject> mongoObjects = jdbcTemplate.query(sql,
                 new ResultSetExtractor<Collection<BasicDBObject>>() {
@@ -70,6 +74,7 @@ public class MigrationExecutor {
                 Collection<BasicDBObject> resultList = new ArrayList<>();
 
                 while (rs.next()) {
+                    long start = System.currentTimeMillis();
                     BasicDBObject mongoObject = new BasicDBObject();
 
                     for (Column column : columns) {
@@ -100,12 +105,17 @@ public class MigrationExecutor {
                                         .getMetaData().get("id");
                             } else {
                                 try {
-                                    Blob blob = rs.getBlob(source);
-                                    value = IOUtils.toByteArray(blob.getBinaryStream());
+                                    value = IOUtils.toByteArray(rs.getBinaryStream(source));
                                 } catch (IOException e) {
                                     throw new SQLException("Error copying blob data to byte array", e);
                                 }
                             }
+                        } else if ("mimemessagetextblob".equals(type)) {
+                            value = new BlobMimeMessageTextExtractor().convert(rs.getBinaryStream(source));
+                        } else if ("stringtointeger".equals(type)) {
+                            value = new StringToIntegerConverter().convert(rs.getString(source));
+                        } else if ("integertoboolean".equals(type)) {
+                            value = new StringToIntegerConverter().convert(rs.getString(source));
                         } else {
                             throw new IllegalArgumentException("Unknown column datatype " + type);
                         }
@@ -113,24 +123,46 @@ public class MigrationExecutor {
                             LOG.debug("Field {} has value {}.", target, value);
                         }
                         mongoObject.put(target, value);
-                        counter.incrementAndGet();
+                    }
+                    if (LOG.isDebugEnabled()) {
+                                LOG.debug("Retrieving source data took {} sec.",
+                                (System.currentTimeMillis() - start) / 1000);
                     }
                     resultList.add(mongoObject);
+                    counter.incrementAndGet();
                 }
                 return resultList;
             }
         });
 
-        DBCollection collection = mongoTemplate.getCollection(collectionName);
+        BasicDBList list = new BasicDBList();
+        list.addAll(mongoObjects);
+
+        int inserted = 0;
+        try {
+            BulkWriteResult result = mongoTemplate.bulkOps(BulkMode.ORDERED, collectionName).insert(list).execute();
+            inserted = result.getInsertedCount();
+        } catch (BulkOperationException e) {
+            LOG.error("Migration failed", e);
+            inserted = e.getErrors().get(0).getIndex(); // only one element in list because we use ordered mode
+        } catch (Exception e) { // we only log unexpected errors
+            LOG.error("Unexpected error - migration failed", e);
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Migration batch run took {} sec.", (System.currentTimeMillis() - start) / 1000);
+        }
+
+        int count = 0;
         for (BasicDBObject mongoObject : mongoObjects) {
-            try {
-                collection.insert(mongoObject);
-                protocolLogger.doLog(Status.SUCCESS, mongoObject.getString("_id"));
-            } catch (DuplicateKeyException e) {
-                protocolLogger.doLog(Status.ERROR, mongoObject.getString("_id"));
-                LOG.error("Migration failed: " + mongoObject.getString("_id"), e);
+            if (count++ < inserted) {
+                // TODO: logs all fields - maybe a security issue
+                protocolLogger.doLog(Status.SUCCESS, mongoObject);
+            } else {
+                protocolLogger.doLog(Status.ERROR, mongoObject, "_id");
             }
         }
+
         return counter.longValue();
     }
 }

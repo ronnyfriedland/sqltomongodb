@@ -1,5 +1,7 @@
 package de.ronnyfriedland.nosql.mongodb.service;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class MigrationService {
     private EntityConfiguration entityConfiguration;
 
     @Autowired
-    private MigrationExecutor migrater;
+    private MigrationBatchExecutor migrater;
 
     @Value("${sql.result.limit}")
     private int limit;
@@ -33,23 +35,33 @@ public class MigrationService {
     @Value("${sql.batchsize}")
     private int batchsize;
 
-    public void doMigration() throws Exception {
-        Entity entity = entityConfiguration.entity();
+    public void doMigration() {
+        // TODO: refactor !
+        if (0 > limit)
+            limit = Integer.MAX_VALUE;
+        else
+            limit += offset;
 
-        boolean finished = false;
-        int currentBatch = 1;
-        do {
-            String sql = StringUtils.replace(entity.getSourceSql(), "{limit}",
-                    String.valueOf(batchsize * currentBatch));
-            sql = StringUtils.replace(sql, "{offset}", String.valueOf(offset));
+        try {
+            Entity entity = entityConfiguration.entity();
 
-            LOG.info("Execute batch processing with sql '" + sql + "'");
-            finished = batchsize > migrater.migrate(sql, entity.getColumn(), entity.getTargetCollection())
-                    || limit <= (batchsize * currentBatch);
+            boolean finished = false;
+            int currentBatch = 1;
+            do {
+                String sql = StringUtils.replace(entity.getSourceSql(), "{limit}",
+                        String.valueOf(batchsize * currentBatch));
+                sql = StringUtils.replace(sql, "{offset}", String.valueOf(offset));
 
-            offset += batchsize;
-            currentBatch++;
-        } while (!finished);
+                LOG.info("Execute batch processing with sql '" + sql + "'");
+                finished = batchsize > migrater.migrate(sql, entity.getColumn(), entity.getTargetCollection())
+                        || limit <= (batchsize * currentBatch);
+
+                offset += batchsize;
+                currentBatch++;
+            } while (!finished);
+        } catch (IOException e) {
+            LOG.error("Error reading configuration.", e);
+        }
     }
 
 }

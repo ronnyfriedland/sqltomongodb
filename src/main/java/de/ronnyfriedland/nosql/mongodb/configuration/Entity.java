@@ -3,14 +3,18 @@ package de.ronnyfriedland.nosql.mongodb.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class Entity {
 
+    @NotNull
     @JacksonXmlProperty(isAttribute = true)
     private String sourceSql;
 
+    @NotNull
     @JacksonXmlProperty(isAttribute = true)
     private String targetCollection;
 

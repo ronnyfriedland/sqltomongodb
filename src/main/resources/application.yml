@@ -2,25 +2,28 @@
 sql:
   migration:
     configuration: import.xml
-  batchsize: 100
+  batchsize: 10
   result:
-    limit: 300
+    limit: 200
     offset: 0
+mongodb:
+  timeout:
+    connection: 10000
+    read: 10000
 # Datasource configuration
 spring:
   datasource:
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    password: TIC3_COREMONGO
-    username: TIC3_COREMONGO
+    password: TIC3_COREAPPUSER
+    username: TIC3_COREAPPUSER
     url: jdbc:oracle:thin:@q4deumsya50.mms-dresden.de:1521:lup14
   data:
     mongodb: 
-      database: mydb
-      grid-fs-database: mydb-gridfs
+      database: mydb1
+      grid-fs-database: mydb1-gridfs
       #host: q4deumsya51
       #host: localhost
       #port: 27017
-      uri: mongodb://q4deumsya51:27017/mydb
+      uri: mongodb://q4deumsya51:27017/mydb1
       repositories:
         enabled: true
-    

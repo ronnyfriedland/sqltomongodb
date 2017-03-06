@@ -1,5 +1,7 @@
 package de.ronnyfriedland.nosql.mongodb.configuration;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
@@ -7,12 +9,15 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 public class Column {
 
+    @NotNull
     @JacksonXmlProperty(isAttribute = true)
     private String sourceColumn;
 
+    @NotNull
     @JacksonXmlProperty(isAttribute = true)
     private String targetField;
 
+    @NotNull
     @JacksonXmlProperty(isAttribute = true)
     private String type;
 

@@ -2,11 +2,6 @@
     <!-- Logging configuration -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <Target>System.out</Target>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
         <encoder>
             <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%level] %msg%n</pattern>
         </encoder>
@@ -28,7 +23,7 @@
             <pattern>%msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="de.ronnyfriedland.nosql.mongodb.protocol" level="info" additivity="false">
+    <logger name="de.ronnyfriedland.nosql.mongodb.protocol" level="INFO">
         <appender-ref ref="PROTOCOL" />
     </logger>
     <root level="INFO">
