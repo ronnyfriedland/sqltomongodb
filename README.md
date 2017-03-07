@@ -8,7 +8,7 @@ Inspired by the migration tool [SQLToNoSQLImporter](https://github.com/msathis/S
     {
      description: "Migrationtool to transfer data stored in a relational database into a MongoDB datastore.",
      author: "Ronny Friedland",
-     licence: "MIT",
+     license: "MIT",
      version: "1.0-SNAPSHOT"
     }
 
