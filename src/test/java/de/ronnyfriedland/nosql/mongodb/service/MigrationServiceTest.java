@@ -34,14 +34,14 @@ public class MigrationServiceTest {
         Entity entity = entityConfiguration.entity();
 
         Mockito.when(migrationBatchExecutorMock.migrate(entity.getSourceSql(), entity.getColumn(),
-                entity.getTargetCollection())).thenReturn(0L);
+                entity.getTargetCollection())).thenReturn(100L, 50L, 0L);
     }
 
     @Test
     public void testMigrate() throws Exception {
         subject.doMigration();
 
-        Mockito.verify(migrationBatchExecutorMock, Mockito.times(1)).migrate(Matchers.anyString(),
+        Mockito.verify(migrationBatchExecutorMock, Mockito.times(2)).migrate(Matchers.anyString(),
                 Matchers.anyCollectionOf(Column.class), Matchers.anyString());
     }
 }

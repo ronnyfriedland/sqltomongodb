@@ -26,16 +26,19 @@ public class EntityConfigurationTest {
         Assert.assertNotNull(entity.getSourceSql());
         Assert.assertEquals("message", entity.getTargetCollection());
 
-        Assert.assertEquals(3, entity.getColumn().size());
+        Assert.assertEquals(4, entity.getColumn().size());
         // id
         Assert.assertEquals(true, entity.getColumn().get(0).isIdentityField());
         Assert.assertEquals("string", entity.getColumn().get(0).getType());
         // subject
         Assert.assertEquals(false, entity.getColumn().get(1).isIdentityField());
         Assert.assertEquals("string", entity.getColumn().get(1).getType());
-        // data
+        // flag
         Assert.assertEquals(false, entity.getColumn().get(2).isIdentityField());
-        Assert.assertEquals("blob", entity.getColumn().get(2).getType());
-        Assert.assertEquals(false, entity.getColumn().get(2).isStoreInGridfs());
+        Assert.assertEquals("integertoboolean", entity.getColumn().get(2).getType());
+        // data
+        Assert.assertEquals(false, entity.getColumn().get(3).isIdentityField());
+        Assert.assertEquals("blob", entity.getColumn().get(3).getType());
+        Assert.assertEquals(false, entity.getColumn().get(3).isStoreInGridfs());
     }
 }

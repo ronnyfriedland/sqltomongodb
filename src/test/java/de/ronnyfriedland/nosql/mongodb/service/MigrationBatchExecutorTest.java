@@ -1,6 +1,7 @@
 package de.ronnyfriedland.nosql.mongodb.service;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -17,13 +18,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.mongodb.BasicDBList;
 import com.mongodb.BulkWriteResult;
 
-import de.ronnyfriedland.nosql.mongodb.Application;
 import de.ronnyfriedland.nosql.mongodb.MigrationThread;
 import de.ronnyfriedland.nosql.mongodb.configuration.Entity;
 import de.ronnyfriedland.nosql.mongodb.configuration.EntityConfiguration;
 
+@SpringBootTest
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
 @MockBeans({ @MockBean(MongoTemplate.class), @MockBean(GridFsTemplate.class), @MockBean(MigrationThread.class) })
 public class MigrationBatchExecutorTest {
 
@@ -33,11 +33,11 @@ public class MigrationBatchExecutorTest {
     @Autowired
     private EntityConfiguration entityConfiguration;
 
-    @MockBean
+    @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Test
-    public void testMigrate() throws Exception {
+    @Before
+    public void setup() throws Exception {
         BulkOperations bulkOperations = Mockito.mock(BulkOperations.class);
         Mockito.when(bulkOperations.insert(Mockito.any(BasicDBList.class))).thenReturn(bulkOperations);
         BulkWriteResult bulkWriteResult = Mockito.mock(BulkWriteResult.class);
@@ -45,7 +45,10 @@ public class MigrationBatchExecutorTest {
         Mockito.when(bulkOperations.execute()).thenReturn(bulkWriteResult);
         Mockito.when(mongoTemplate.bulkOps(Mockito.any(BulkMode.class), Mockito.anyString()))
         .thenReturn(bulkOperations);
+    }
 
+    @Test
+    public void testMigrate() throws Exception {
         Entity entity = entityConfiguration.entity();
 
         long result = subject.migrate(entity.getSourceSql(), entity.getColumn(), entity.getTargetCollection());

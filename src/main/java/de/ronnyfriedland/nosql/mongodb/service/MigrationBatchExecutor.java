@@ -125,7 +125,7 @@ public class MigrationBatchExecutor {
                         mongoObject.put(target, value);
                     }
                     if (LOG.isDebugEnabled()) {
-                                LOG.debug("Retrieving source data took {} sec.",
+                        LOG.debug("Retrieving source data took {} sec.",
                                 (System.currentTimeMillis() - start) / 1000);
                     }
                     resultList.add(mongoObject);
@@ -156,8 +156,7 @@ public class MigrationBatchExecutor {
         int count = 0;
         for (BasicDBObject mongoObject : mongoObjects) {
             if (count++ < inserted) {
-                // TODO: logs all fields - maybe a security issue
-                protocolLogger.doLog(Status.SUCCESS, mongoObject);
+                protocolLogger.doLog(Status.SUCCESS, mongoObject, "_id");
             } else {
                 protocolLogger.doLog(Status.ERROR, mongoObject, "_id");
             }

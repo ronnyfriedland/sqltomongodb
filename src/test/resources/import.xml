@@ -1,5 +1,6 @@
-<entity sourceSql="select id, subject, data from message" targetCollection="message">
+<entity sourceSql="select id, subject, flag, data from message" targetCollection="message">
     <column sourceColumn="id" targetField="_id" type="string" pk="true" />
     <column sourceColumn="subject" targetField="subject" type="string" />
+    <column sourceColumn="flag" targetField="flag" type="integertoboolean" />
     <column sourceColumn="data" targetField="messagedata" type="blob" gridfs="false" />
 </entity>

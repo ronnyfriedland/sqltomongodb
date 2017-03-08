@@ -1,9 +1,7 @@
 package de.ronnyfriedland.nosql.mongodb;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,20 +25,16 @@ public class TestdataGenerator implements ApplicationRunner, DisposableBean {
      */
     @Override
     public void run(final ApplicationArguments args) throws Exception {
-        Connection c = jdbcTemplate.getDataSource().getConnection();
-        DatabaseMetaData dbm = c.getMetaData();
-        ResultSet tables = dbm.getTables(null, null, "message", null);
-        if (!tables.next()) {
-            LOG.info("Table 'message' not found - creating it.");
-            jdbcTemplate
-            .execute("create table message (id varchar(255) primary key, subject varchar(2048), data blob)");
-        }
+        jdbcTemplate.execute(
+                "create table IF NOT EXISTS message (id varchar(255) primary key, subject varchar(2048), flag integer, data blob)");
 
-        PreparedStatement s = jdbcTemplate.getDataSource().getConnection().prepareStatement("insert into message values(?, ?, ?)");
+        PreparedStatement s = jdbcTemplate.getDataSource().getConnection()
+                .prepareStatement("insert into message values(?, ?, ?, ?)");
         for (int i = 0; i < 100; i++) {
-            s.setString(1, String.valueOf(i));
-            s.setString(2, "test subject " + i);
-            s.setBytes(3, ("Hello BLOB " + i).getBytes());
+            s.setString(1, UUID.randomUUID().toString());
+            s.setString(2, "TEST Subject " + i);
+            s.setInt(3, i % 2);
+            s.setBytes(4, ("Hello BLOB " + i).getBytes());
             s.execute();
         }
         LOG.info("Testdata created.");

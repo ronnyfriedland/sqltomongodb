@@ -3,6 +3,7 @@ package de.ronnyfriedland.nosql.mongodb.protocol;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.bson.json.JsonWriterSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class ProtocolLogger {
             valueToLog = mapper.writeValueAsString(attributesToLog);
         } catch (JsonProcessingException e) {
             LOG.error("Error creating protocol log for restricted attributes - logging whole object instead.");
-            valueToLog = value.toJson();
+            valueToLog = value.toJson(new JsonWriterSettings(true));
         }
         LOG.info("[{}]: {}", status.status, valueToLog);
     }

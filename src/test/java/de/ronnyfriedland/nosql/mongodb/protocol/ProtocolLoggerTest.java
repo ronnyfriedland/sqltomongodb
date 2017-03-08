@@ -22,8 +22,16 @@ public class ProtocolLoggerTest {
     private ProtocolLogger subject;
 
     @Test
-    public void test() {
+    public void testNoAttributes() {
         subject.doLog(Status.SUCCESS, new BasicDBObject());
+    }
+
+    @Test
+    public void testWithAttributes() {
+        BasicDBObject obj = new BasicDBObject();
+        obj.append("1", "this is a test value");
+        obj.append("2", "this is another test value");
+        subject.doLog(Status.SUCCESS, obj, "1", "2");
     }
 
 }
