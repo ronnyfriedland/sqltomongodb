@@ -22,6 +22,10 @@ Inspired by the migration tool [SQLToNoSQLImporter](https://github.com/msathis/S
 
 ## TODOs
 
+- enable ssl
+  - tls protocol version
+  - ciphersuites
+  - keystore and truststore
 - move application.yml and import.xml outside of application jar  
 - provide docker container  
 - more documentation  
