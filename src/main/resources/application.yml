@@ -13,17 +13,14 @@ mongodb:
 # Datasource configuration
 spring:
   datasource:
-    driver-class-name: oracle.jdbc.driver.OracleDriver
-    password: TIC3_COREAPPUSER
-    username: TIC3_COREAPPUSER
-    url: jdbc:oracle:thin:@q4deumsya50.mms-dresden.de:1521:lup14
+    driver-class-name: 
+    password: 
+    username: 
+    url: 
   data:
     mongodb: 
-      database: mydb1
-      grid-fs-database: mydb1-gridfs
-      #host: q4deumsya51
-      #host: localhost
-      #port: 27017
-      uri: mongodb://q4deumsya51:27017/mydb1
+      database: 
+      grid-fs-database: 
+      uri: 
       repositories:
         enabled: true
