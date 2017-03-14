@@ -10,15 +10,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mongodb.MongoClientOptions;
 
+import de.ronnyfriedland.nosql.mongodb.configuration.ssl.MongoDbSSLSocketFactoryConfiguration;
+
 /**
  * @author ronnyfriedland
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MongoDbConfiguration.class)
-public class MongoDbConfigurationTest {
+@SpringBootTest(classes = { MongoDbClientOptionsConfiguration.class, MongoDbSSLSocketFactoryConfiguration.class })
+public class MongoDbClientOptionsConfigurationTest {
 
     @Autowired
-    private MongoDbConfiguration subject;
+    private MongoDbClientOptionsConfiguration subject;
 
     @Value("${mongodb.timeout.connection}")
     private int connectionTimeout;

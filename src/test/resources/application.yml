@@ -7,6 +7,10 @@ sql:
     limit: 1000
     offset: 0
 mongodb:
+  ssl: 
+    enabled: true
+    tlsversions: 
+    ciphersuites: 
   timeout:
     connection: 10000
     read: 10000
@@ -15,9 +19,3 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:./target/unittest;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-  data:
-    mongodb: 
-      uri: mongodb://localhost:27017/unittest
-      repositories:
-        enabled: true
-    

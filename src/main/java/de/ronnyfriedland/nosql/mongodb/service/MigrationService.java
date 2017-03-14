@@ -35,6 +35,9 @@ public class MigrationService {
     @Value("${sql.batchsize}")
     private int batchsize;
 
+    /**
+     * Starts the migration process.
+     */
     public void doMigration() {
         // TODO: refactor !
         if (0 > limit)
