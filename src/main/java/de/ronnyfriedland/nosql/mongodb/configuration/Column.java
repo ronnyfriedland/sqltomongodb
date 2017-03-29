@@ -27,6 +27,9 @@ public class Column {
     @JacksonXmlProperty(isAttribute = true, localName = "gridfs")
     private boolean storeInGridfs;
 
+    @JacksonXmlProperty(isAttribute = true, localName = "gridfsIdSourceColumn")
+    private String gridfsId;
+
     public String getSourceColumn() {
         return sourceColumn;
     }
@@ -57,6 +60,14 @@ public class Column {
 
     public void setStoreInGridfs(final boolean storeInGridfs) {
         this.storeInGridfs = storeInGridfs;
+    }
+
+    public String getGridfsId() {
+        return gridfsId;
+    }
+
+    public void setGridfsId(final String gridfsId) {
+        this.gridfsId = gridfsId;
     }
 
     public String getType() {

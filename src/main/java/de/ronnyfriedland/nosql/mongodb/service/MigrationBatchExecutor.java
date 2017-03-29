@@ -26,6 +26,7 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.BulkWriteResult;
+import com.mongodb.gridfs.GridFSFile;
 
 import de.ronnyfriedland.nosql.mongodb.configuration.Column;
 import de.ronnyfriedland.nosql.mongodb.converter.BlobMimeMessageTextExtractor;
@@ -33,6 +34,11 @@ import de.ronnyfriedland.nosql.mongodb.converter.StringToIntegerConverter;
 import de.ronnyfriedland.nosql.mongodb.protocol.ProtocolLogger;
 import de.ronnyfriedland.nosql.mongodb.protocol.ProtocolLogger.Status;
 
+/**
+ * Batch execution of migration.
+ *
+ * @author ronnyfriedland
+ */
 @Service
 @Transactional
 public class MigrationBatchExecutor {
@@ -97,12 +103,19 @@ public class MigrationBatchExecutor {
                             value = rs.getBoolean(source);
                         } else if ("blob".equals(type)) {
                             if (column.isStoreInGridfs()) {
-                                // save uuid of metadata as reference in document
-                                value = gridFsTemplate
-                                        .store(rs.getBinaryStream(source),
-                                                BasicDBObjectBuilder.start()
-                                                .add("id", UUID.randomUUID().toString()).get())
-                                        .getMetaData().get("id");
+                                if (column.getGridfsId() == null) {
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug("Parameter 'gridfsIdSourceColumn' not set - generating new uuid for gridfs file");
+                                    }
+                                    value = UUID.randomUUID().toString();
+                                } else {
+                                    // if set we use the value of the source column
+                                    value = rs.getString(column.getGridfsId());
+                                }
+                                // uuid as reference in document collection
+                                GridFSFile file = gridFsTemplate.store(rs.getBinaryStream(source), BasicDBObjectBuilder.start().get());
+                                file.put("_id", value);
+                                file.save();
                             } else {
                                 try {
                                     value = IOUtils.toByteArray(rs.getBinaryStream(source));
