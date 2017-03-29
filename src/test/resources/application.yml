@@ -9,8 +9,8 @@ sql:
 mongodb:
   ssl: 
     enabled: true
-    tlsversions: 
-    ciphersuites: 
+    tlsversions: TLSv1.2
+    ciphersuites: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
   timeout:
     connection: 10000
     read: 10000
