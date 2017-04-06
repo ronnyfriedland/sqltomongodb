@@ -9,7 +9,12 @@ import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BlobMimeMessageTextExtractor implements Converter<InputStream, String> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BlobMimeMessageTextExtractor.class);
 
     /**
      * {@inheritDoc}
@@ -38,6 +43,7 @@ public class BlobMimeMessageTextExtractor implements Converter<InputStream, Stri
 
             return c.toString();
         } catch (MessagingException | IOException e) {
+            LOG.error("Error extracting text content of mimemessage", e);
             return null;
         }
     }

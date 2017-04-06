@@ -1,4 +1,4 @@
-package de.ronnyfriedland.nosql.mongodb.configuration;
+package de.ronnyfriedland.nosql.mongodb.configuration.mongodb;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mongodb.MongoClientOptions;
 
+import de.ronnyfriedland.nosql.mongodb.configuration.mongodb.MongoDbClientOptionsConfiguration;
 import de.ronnyfriedland.nosql.mongodb.configuration.ssl.MongoDbSSLSocketFactoryConfiguration;
 
 /**

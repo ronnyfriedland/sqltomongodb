@@ -1,4 +1,4 @@
-package de.ronnyfriedland.nosql.mongodb.configuration;
+package de.ronnyfriedland.nosql.mongodb.configuration.mongodb;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
