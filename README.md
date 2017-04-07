@@ -11,9 +11,15 @@ Inspired by the migration tool [SQLToNoSQLImporter](https://github.com/msathis/S
      version: "1.0-SNAPSHOT"
     }
 
+There is no warranty - you should know what you are doing. Use at your own risk.
+
 ## Configuration
 
+There are two configuration files you need and adapt.
+
 ### application.yml
+
+The ``application.yml`` contains all parameters you need to configure the application - eg. configuration of database, tls and timeout.
 
 ### import.xml
 
@@ -68,7 +74,15 @@ The schema definition of this file is listed below:
 
 ### Build and run from source
 
+To build the tool from source, just clone this repository and build it using [Apache Maven 3.x](https://maven.apache.org/). On commandline ``mvn clean install`` will start compiling and packaging the application.
+
 ### Start executable jar
+
+First copy the configuration files in the working directory where the executable jar is located. An example of the configuration files can be found in ``src/main/application``. If everything is configured properly just start the migration with ``java -jar sql-to-mongodb-1.0-SNAPSHOT.jar``
+
+## Logging
+
+By default the application uses [Lockback](https://logback.qos.ch/) for logging. If you need to adapt the settings shipped with the application you can override them by defining your own configuration file.
 
 ## SSL
 
