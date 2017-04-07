@@ -31,6 +31,7 @@ import com.mongodb.gridfs.GridFSFile;
 import de.ronnyfriedland.nosql.mongodb.configuration.Column;
 import de.ronnyfriedland.nosql.mongodb.converter.BlobMimeMessageTextExtractor;
 import de.ronnyfriedland.nosql.mongodb.converter.StringToIntegerConverter;
+import de.ronnyfriedland.nosql.mongodb.converter.XmlToJsonConverter;
 import de.ronnyfriedland.nosql.mongodb.protocol.ProtocolLogger;
 import de.ronnyfriedland.nosql.mongodb.protocol.ProtocolLogger.Status;
 
@@ -129,6 +130,8 @@ public class MigrationBatchExecutor {
                             value = new StringToIntegerConverter().convert(rs.getString(source));
                         } else if ("integertoboolean".equals(type)) {
                             value = new StringToIntegerConverter().convert(rs.getString(source));
+                        } else if ("xmltojson".equals(type)) {
+                            value = new XmlToJsonConverter().convert(rs.getString(source));
                         } else {
                             throw new IllegalArgumentException("Unknown column datatype " + type);
                         }

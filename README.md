@@ -4,7 +4,6 @@
 
 Inspired by the migration tool [SQLToNoSQLImporter](https://github.com/msathis/SQLToNoSQLImporter) I started to create yet another [MongoDB](https://www.mongodb.com/) importer which can be configured and extended in a very easy way.
 
-
     {
      description: "Migrationtool to transfer data stored in a relational database into a MongoDB datastore.",
      author: "Ronny Friedland",
@@ -18,6 +17,43 @@ Inspired by the migration tool [SQLToNoSQLImporter](https://github.com/msathis/S
 
 ### import.xml
 
+This configuration file defines which data has to be migrated and maybe converted while migrating the data.
+The schema definition of this file is listed below:
+
+
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="column">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute type="xs:string" name="sourceColumn"/>
+              <xs:attribute type="xs:string" name="targetField"/>
+              <xs:attribute type="xs:string" name="type"/>
+              <xs:attribute type="xs:string" name="pk" use="optional"/>
+              <xs:attribute type="xs:string" name="gridfs" use="optional"/>
+              <xs:attribute type="xs:string" name="gridfsIdSourceColumn" use="optional"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="entity">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="column" maxOccurs="unbounded" minOccurs="1"/>
+          </xs:sequence>
+          <xs:attribute type="xs:string" name="sourceSql"/>
+          <xs:attribute type="xs:string" name="targetCollection"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+
+- sourceColumn: the name of the column name of your source database table
+- targetField: the name of the field in your target collection
+- type: the datatype - can be used to convert the data while migrating
+- pk: flag if the current column is the primary key (not used yet)
+- gridfs: flag if the data should be stored in gridfs
+- gridfsIdSourceColumn: you can define if the id of the gridfs document should be taken of the source dataset
+
 ## Installation
 
 ### Build and run from source
@@ -26,7 +62,7 @@ Inspired by the migration tool [SQLToNoSQLImporter](https://github.com/msathis/S
 
 ## SSL
 
-Authentication parameter are provided in ``application.yml``. 
+Authentication parameters are provided in ``application.yml``. 
 Currently the communication to the MongoDB can be ssl-encrypted. The configuration parameters are:
 
 - mongodb.ssl.enabled
