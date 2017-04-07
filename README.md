@@ -50,6 +50,16 @@ The schema definition of this file is listed below:
 - sourceColumn: the name of the column name of your source database table
 - targetField: the name of the field in your target collection
 - type: the datatype - can be used to convert the data while migrating
+  - string
+  - long
+  - integer
+  - date
+  - timestamp
+  - blob
+  - mimemessagetextblob: extracts the text parts of a mime message
+  - stringtointeger: converts a string to an integer
+  - integertoboolean: converts an integer to a boolean value
+  - xmltojson: converts the source xml into json format
 - pk: flag if the current column is the primary key (not used yet)
 - gridfs: flag if the data should be stored in gridfs
 - gridfsIdSourceColumn: you can define if the id of the gridfs document should be taken of the source dataset
