@@ -115,7 +115,4 @@ Database-related parameters are:
 
 ## TODOs
 
-- move application.yml and import.xml outside of application jar  
 - provide docker container  
-- more documentation  
-- more converter
