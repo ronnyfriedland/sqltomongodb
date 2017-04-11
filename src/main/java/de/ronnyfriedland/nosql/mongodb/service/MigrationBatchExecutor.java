@@ -41,7 +41,6 @@ import de.ronnyfriedland.nosql.mongodb.protocol.ProtocolLogger.Status;
  * @author ronnyfriedland
  */
 @Service
-@Transactional
 public class MigrationBatchExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(MigrationBatchExecutor.class);
@@ -66,9 +65,11 @@ public class MigrationBatchExecutor {
      * @param collectionName the name of the target collection
      * @return number of migrated rows
      */
+    @Transactional(readOnly = true)
     public long migrate(final String sql, final Collection<Column> columns, final String collectionName) {
         long start = System.currentTimeMillis();
         final AtomicInteger counter = new AtomicInteger(0);
+
         Collection<BasicDBObject> mongoObjects = jdbcTemplate.query(sql,
                 new ResultSetExtractor<Collection<BasicDBObject>>() {
             /**
