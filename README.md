@@ -76,9 +76,11 @@ The schema definition of this file is listed below:
 
 To build the tool from source, just clone this repository and build it using [Apache Maven 3.x](https://maven.apache.org/). On commandline ``mvn clean install`` will start compiling and packaging the application.
 
+If you want you can add the jdbc driver of your database at the end of the dependency section. So the driver will be packaged into the application package.
+
 ### Start executable jar
 
-First copy the configuration files in the working directory where the executable jar is located. An example of the configuration files can be found in ``src/main/application``. If everything is configured properly just start the migration with ``java -jar sql-to-mongodb-1.0-SNAPSHOT.jar``
+First copy the configuration files in the working directory where the executable jar is located. An example of the configuration files can be found in ``src/main/application``. If not done already when building from source - copy the jdbc driver to the classpath (eg. beside the executable jar). If everything is configured properly just start the migration with ``java -jar sql-to-mongodb-1.0-SNAPSHOT.jar``
 
 ## Logging
 
