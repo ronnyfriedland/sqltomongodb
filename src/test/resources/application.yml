@@ -2,6 +2,7 @@
 sql:
   migration:
     configuration: import.xml
+    stopOnError: false
   batchsize: 100
   result:
     limit: 1000

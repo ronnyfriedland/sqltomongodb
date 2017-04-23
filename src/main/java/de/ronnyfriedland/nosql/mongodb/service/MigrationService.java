@@ -35,6 +35,9 @@ public class MigrationService {
     @Value("${sql.batchsize}")
     private int batchsize;
 
+    @Value("${sql.migration.stopOnError}")
+    private boolean stopOnError;
+
     /**
      * Starts the migration process.
      */
@@ -56,7 +59,7 @@ public class MigrationService {
                 sql = StringUtils.replace(sql, "{offset}", String.valueOf(offset));
 
                 LOG.info("Execute batch processing with sql '" + sql + "'");
-                finished = batchsize > migrater.migrate(sql, entity.getColumn(), entity.getTargetCollection())
+                finished = batchsize > migrater.migrate(sql, entity.getColumn(), entity.getTargetCollection(), stopOnError)
                         || limit <= (batchsize * currentBatch);
 
                 offset += batchsize;

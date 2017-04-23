@@ -34,7 +34,7 @@ public class MigrationServiceTest {
         Entity entity = entityConfiguration.entity();
 
         Mockito.when(migrationBatchExecutorMock.migrate(entity.getSourceSql(), entity.getColumn(),
-                entity.getTargetCollection())).thenReturn(100L, 50L, 0L);
+                entity.getTargetCollection(), false)).thenReturn(100L, 50L, 0L);
     }
 
     @Test
@@ -42,6 +42,6 @@ public class MigrationServiceTest {
         subject.doMigration();
 
         Mockito.verify(migrationBatchExecutorMock, Mockito.times(2)).migrate(Matchers.anyString(),
-                Matchers.anyCollectionOf(Column.class), Matchers.anyString());
+                Matchers.anyCollectionOf(Column.class), Matchers.anyString(), Matchers.anyBoolean());
     }
 }

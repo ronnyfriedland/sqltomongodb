@@ -51,7 +51,7 @@ public class MigrationBatchExecutorTest {
     public void testMigrate() throws Exception {
         Entity entity = entityConfiguration.entity();
 
-        long result = subject.migrate(entity.getSourceSql(), entity.getColumn(), entity.getTargetCollection());
+        long result = subject.migrate(entity.getSourceSql(), entity.getColumn(), entity.getTargetCollection(), false);
         Assert.assertEquals(100, result);
     }
 

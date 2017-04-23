@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations.BulkMode;
@@ -63,10 +64,11 @@ public class MigrationBatchExecutor {
      * @param sql the sql to retrieve the data
      * @param columns the column specification
      * @param collectionName the name of the target collection
+     * @param stopOnError if true an exception is raised if error occours, otherwise the error is logged
      * @return number of migrated rows
      */
     @Transactional(readOnly = true)
-    public long migrate(final String sql, final Collection<Column> columns, final String collectionName) {
+    public long migrate(final String sql, final Collection<Column> columns, final String collectionName, final boolean stopOnError) {
         long start = System.currentTimeMillis();
         final AtomicInteger counter = new AtomicInteger(0);
 
@@ -177,6 +179,9 @@ public class MigrationBatchExecutor {
             } else {
                 protocolLogger.doLog(Status.ERROR, mongoObject, "_id");
             }
+        }
+        if(stopOnError && inserted < counter.intValue()) {
+            throw new IllegalStateException("Migration failed - check logfile for details.");
         }
 
         return counter.longValue();
