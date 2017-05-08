@@ -66,6 +66,7 @@ The schema definition of this file is listed below:
   - stringtointeger: converts a string to an integer
   - integertoboolean: converts an integer to a boolean value
   - xmltojson: converts the source xml into json format
+  - stringtoarray: converts a single string value to a one-element-stringarray
 - pk: flag if the current column is the primary key (not used yet)
 - gridfs: flag if the data should be stored in gridfs
 - gridfsIdSourceColumn: you can define if the id of the gridfs document should be taken of the source dataset

@@ -12,7 +12,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations.BulkMode;
@@ -31,6 +30,7 @@ import com.mongodb.gridfs.GridFSFile;
 
 import de.ronnyfriedland.nosql.mongodb.configuration.Column;
 import de.ronnyfriedland.nosql.mongodb.converter.BlobMimeMessageTextExtractor;
+import de.ronnyfriedland.nosql.mongodb.converter.StringToArrayConverter;
 import de.ronnyfriedland.nosql.mongodb.converter.StringToIntegerConverter;
 import de.ronnyfriedland.nosql.mongodb.converter.XmlToJsonConverter;
 import de.ronnyfriedland.nosql.mongodb.protocol.ProtocolLogger;
@@ -135,6 +135,8 @@ public class MigrationBatchExecutor {
                             value = new StringToIntegerConverter().convert(rs.getString(source));
                         } else if ("xmltojson".equals(type)) {
                             value = new XmlToJsonConverter().convert(rs.getString(source));
+                        } else if ("stringtoarray".equals(type)) {
+                            value = new StringToArrayConverter().convert(rs.getString(source));
                         } else {
                             throw new IllegalArgumentException("Unknown column datatype " + type);
                         }
