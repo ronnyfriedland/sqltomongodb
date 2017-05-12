@@ -21,6 +21,10 @@ public class Column {
     @JacksonXmlProperty(isAttribute = true)
     private String type;
 
+    @NotNull
+    @JacksonXmlProperty(isAttribute = true)
+    private String arrayDelimiter;
+
     @JacksonXmlProperty(isAttribute = true, localName = "pk")
     private boolean identityField;
 
@@ -76,5 +80,13 @@ public class Column {
 
     public void setType(final String type) {
         this.type = type;
+    }
+
+    public String getArrayDelimiter() {
+        return arrayDelimiter;
+    }
+
+    public void setArrayDelimiter(final String arrayDelimiter) {
+        this.arrayDelimiter = arrayDelimiter;
     }
 }

@@ -26,4 +26,14 @@ public class StringToArrayConverterTest {
         Assert.assertEquals(testValue, subject.convert(testValue)[0]);
     }
 
+    @Test
+    public void testValidValues() throws Exception {
+        String testValue1 = "i am a test";
+        String testValue2 = "i am another test";
+        String testValue = testValue1 + "," + testValue2;
+        Assert.assertEquals(2, subject.convert(testValue).length);
+        Assert.assertEquals(testValue1, subject.convert(testValue)[0]);
+        Assert.assertEquals(testValue2, subject.convert(testValue)[1]);
+    }
+
 }

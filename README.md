@@ -35,6 +35,7 @@ The schema definition of this file is listed below:
               <xs:attribute type="xs:string" name="sourceColumn"/>
               <xs:attribute type="xs:string" name="targetField"/>
               <xs:attribute type="xs:string" name="type"/>
+              <xs:attribute type="xs:string" name="arrayDelimiter"/>
               <xs:attribute type="xs:string" name="pk" use="optional"/>
               <xs:attribute type="xs:string" name="gridfs" use="optional"/>
               <xs:attribute type="xs:string" name="gridfsIdSourceColumn" use="optional"/>
