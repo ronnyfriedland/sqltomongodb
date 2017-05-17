@@ -1,7 +1,7 @@
 # Migration configuration
 sql:
   migration:
-    configuration: import.xml
+    configuration: src/test/resources/import.xml
     stopOnError: false
   batchsize: 100
   result:

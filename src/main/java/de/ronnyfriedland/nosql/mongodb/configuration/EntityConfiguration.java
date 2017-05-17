@@ -1,5 +1,6 @@
 package de.ronnyfriedland.nosql.mongodb.configuration;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +21,7 @@ public class EntityConfiguration {
     @Bean
     public Entity entity() throws IOException {
         XmlMapper xmlMapper = new XmlMapper();
-        Entity entity = xmlMapper.readValue(
-                Thread.currentThread().getContextClassLoader().getResourceAsStream(configurationfile),
-                Entity.class);
+        Entity entity = xmlMapper.readValue(new FileInputStream(configurationfile), Entity.class);
         return entity;
     }
 }
