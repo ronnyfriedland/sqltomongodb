@@ -112,6 +112,7 @@ MongoDB-related parameters are:
 - spring.data.mongodb.authentication-database:
 - spring.data.mongodb.username:
 - spring.data.mongodb.password:
+- spring.data.mongodb.uri:
 
 Database-related parameters are:
 - spring.datasource.username
