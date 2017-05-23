@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BulkWriteResult;
+import com.mongodb.gridfs.GridFS;
 
 import de.ronnyfriedland.nosql.mongodb.MigrationThread;
 import de.ronnyfriedland.nosql.mongodb.configuration.Entity;
@@ -24,7 +25,8 @@ import de.ronnyfriedland.nosql.mongodb.configuration.EntityConfiguration;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@MockBeans({ @MockBean(MongoTemplate.class), @MockBean(GridFsTemplate.class), @MockBean(MigrationThread.class) })
+@MockBeans({ @MockBean(MongoTemplate.class), @MockBean(GridFS.class), @MockBean(GridFsTemplate.class),
+        @MockBean(MigrationThread.class) })
 public class MigrationBatchExecutorTest {
 
     @Autowired

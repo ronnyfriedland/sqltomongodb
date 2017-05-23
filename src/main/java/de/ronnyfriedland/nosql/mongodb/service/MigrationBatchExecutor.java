@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,7 +17,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations.BulkMode;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Service;
@@ -24,9 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.BulkWriteResult;
-import com.mongodb.gridfs.GridFSFile;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSInputFile;
 
 import de.ronnyfriedland.nosql.mongodb.configuration.Column;
 import de.ronnyfriedland.nosql.mongodb.converter.BlobMimeMessageTextExtractor;
@@ -53,7 +53,7 @@ public class MigrationBatchExecutor {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private GridFsTemplate gridFsTemplate;
+    private GridFS gridFs;
 
     @Autowired
     private ProtocolLogger protocolLogger;
@@ -117,7 +117,7 @@ public class MigrationBatchExecutor {
                                     value = rs.getString(column.getGridfsId());
                                 }
                                 // uuid as reference in document collection
-                                GridFSFile file = gridFsTemplate.store(rs.getBinaryStream(source), BasicDBObjectBuilder.start().get());
+                                        GridFSInputFile file = gridFs.createFile(rs.getBinaryStream(source));
                                 file.put("_id", value);
                                 file.save();
                             } else {
@@ -136,7 +136,8 @@ public class MigrationBatchExecutor {
                         } else if ("xmltojson".equals(type)) {
                             value = new XmlToJsonConverter().convert(rs.getString(source));
                         } else if ("stringtoarray".equals(type)) {
-                            value = new StringToArrayConverter().convert(rs.getString(source));
+                            value = new StringToArrayConverter(Optional.of(column.getArrayDelimiter()))
+                                    .convert(rs.getString(source));
                         } else {
                             throw new IllegalArgumentException("Unknown column datatype " + type);
                         }
